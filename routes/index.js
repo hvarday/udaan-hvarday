@@ -9,6 +9,9 @@ router.get('/', function(req, res, next) {
 
 router.get('/news', (req, res, next)=>{
     
+    
+    // Needed  to use server calls, as calling it from frontend gave CORS error.
+    
     rp.get("https://newsapi.org/v2/top-headlines?apiKey=cd1db87dec794c2288c915ba6abeee94&country=in")
     .then((data)=>{
         res.json(data);
