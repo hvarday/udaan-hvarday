@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
+</head>
+
+<body ng-controller="controller">
+    <h1>
+        News Feed
+    </h1>
+    
+    <label>Search Term</label>
+    <input type="text" ng-model="searchTerm"/>
+    
+    <ul>
+        <li ng-repeat-start="val in news | searchFilter:searchTerm" >{{val.title}}</li>
+        <br>{{val.description}}
+        <br><br>{{ "-" + val.author}}
+        <br>
+        <a ng-href="{{val.url}}" target="_blank">View full article here</a>
+        <br><br ng-repeat-end>
+    </ul>
+    
+    <script>
+    
+        angular.module('app', [])
+        .filter('searchFilter', ()=>{
+            
+            return (newsItems, searchTerm)=>{
+                
+                var results = [];
+                
+                if(!(searchTerm || "").length)
+                    return newsItems;
+                
+                newsItems.forEach((newsItem)=>{
+                    
+                    var flag = false;
+
+                    newsItem.title.split(' ').forEach((word)=>{
+                        if(word.toLowerCase().includes((searchTerm || "").toLowerCase()))
+                            flag = true;
+                    });
+                    
+                    if(flag || !(searchTerm || "").length)
+                        results.push(newsItem);
+                })
+                
+                return results;
+                
+            }
+
+        })
+        .controller('controller', ['$scope', '$http', function($scope, $http){
+            
+            console.log("Hello from controller");
+            
+            $scope.news = [];
+            
+            $http.get('/news')
+            .then((resp)=>{
+                $scope.news = JSON.parse(resp.data).articles;
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+            
+        }])
+    
+    </script>
+</body>
+
+</html>
