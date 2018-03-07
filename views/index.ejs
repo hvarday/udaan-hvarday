@@ -31,27 +31,50 @@
         angular.module('app', [])
         .filter('searchFilter', ()=>{
             
+            //Custom search filter
+            
             return (newsItems, searchTerm)=>{
                 
-                var results = [];
+                var results = [], bestResults = [];
                 
+                
+                //  if empty search term, return all
                 if(!(searchTerm || "").length)
                     return newsItems;
                 
-                newsItems.forEach((newsItem)=>{
+                // iterate over all the newsItems
+                newsItems.forEach((newsItem, newsItemIndex)=>{
                     
-                    var flag = false;
-
-                    newsItem.title.split(' ').forEach((word)=>{
+                    var flag = false, bestResult = false, len = (searchTerm || "").length;
+                    
+                    // split the title and check word by word
+                    //  1. if the search term is contained in the word
+                    //  2. if it is best result => word starts with searchTerm  
+                    newsItem.title.split(' ').forEach((word, wordIndex)=>{
+                        
                         if(word.toLowerCase().includes((searchTerm || "").toLowerCase()))
                             flag = true;
+                        
+                        if(!bestResult && word.slice(0, len).toLowerCase() === searchTerm.toLowerCase()){
+                            newsItems[newsItemIndex].bestResult = wordIndex;
+                            bestResult = true;
+                        }
+                    
                     });
                     
-                    if(flag || !(searchTerm || "").length)
+                    // sorts in the order of occurence of the matched word.
+                    bestResults = bestResults.sort((a, b)=>{
+                        return a.bestResult - b.bestResult;
+                    })
+
+                    if(bestResult)
+                        bestResults.push(newsItem);
+                    
+                    else if(flag || !(searchTerm || "").length)
                         results.push(newsItem);
                 })
                 
-                return results;
+                return bestResults.concat(results);
                 
             }
 
@@ -62,13 +85,25 @@
             
             $scope.news = [];
             
-            $http.get('/news')
-            .then((resp)=>{
-                $scope.news = JSON.parse(resp.data).articles;
-            })
-            .catch((err)=>{
-                console.log(err);
-            })
+            
+            //Makes call to the server endpoint to fetch news.
+            $scope.fetchNews = ()=>{
+                
+                console.log("Fetching news");
+                
+                $http.get('/news')
+                .then((resp)=>{
+                    $scope.news = JSON.parse(resp.data).articles;
+                })
+                .catch((err)=>{
+                    console.log(err);
+                })
+
+            }
+            
+            $scope.fetchNews();
+            
+            window.setInterval($scope.fetchNews, 5000);            
             
         }])
     
