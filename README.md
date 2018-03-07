@@ -14,8 +14,9 @@ Udaan Recruitment Test
 
 ### Installation 
 ---
+* Node.JS needs to be installed in the system where application is being checked.
 
-```npm install``` - Installs all the packages that will be required to run the application.
+* ```npm install``` - Installs all the packages that will be required to run the application.
 
 ### Running the application
 ---
@@ -30,6 +31,10 @@ Udaan Recruitment Test
 ### Instructions
 ---
 
-Visit the above link, and it will load a basic HTML page, with all results (initially).
+* Visit the above link, and it will load a basic HTML page, with all results (initially).
 
-After you start typing in the search bar, it will automatically filter results.
+* After you start typing in the search bar, it will automatically filter results.
+
+* Orders the search results as mentioned in the question (Best, Good, Bad)
+
+* Refreshs the feed every 5 seconds.
