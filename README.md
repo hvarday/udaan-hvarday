@@ -40,3 +40,12 @@ Udaan Recruitment Test
 * Refreshs the feed every 5 seconds.
 
 * Deployed here as well - [https://udaan-test.herokuapp.com](https://udaan-test.herokuapp.com)
+
+
+### Important Files
+---
+
+Main Business Logic available in -
+
+* ```views/index.ejs```
+* ```routes/index.js```
